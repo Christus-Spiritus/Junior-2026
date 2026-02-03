@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Carême 2026 – Objectifs</title>
+  <title>Christus Junior</title>
   <style>
     :root{
       --bg:#0b1220; --text:#e8eefc; --muted:#a7b4d6;
@@ -45,29 +45,8 @@
     .foot{ margin-top:10px; color:var(--muted); font-size:12px; line-height:1.5; }
     .hr{ height:1px; background:var(--line); margin:12px 0; }
 
-    select, input[type="text"]{
-      background:rgba(0,0,0,.18); color:var(--text);
-      border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:10px 12px; font:inherit;
-    }
-
     .quote{ padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05); }
     .quote b{ font-weight:900; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .hidden{ display:none; }
-
-    /* Mini modal */
-    .modalBackdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.55);
-      display:flex; align-items:center; justify-content:center; padding:18px;
-    }
-    .modal{
-      max-width:520px; width:100%;
-      background:rgba(17,26,46,.98); border:1px solid rgba(255,255,255,.12);
-      border-radius:16px; padding:14px; box-shadow:0 20px 60px rgba(0,0,0,.45);
-    }
-    .modal h3{ margin:0 0 6px; font-size:16px; }
-    .modal .sub{ margin:0 0 10px; }
-    .modal .row{ justify-content:flex-start; }
   </style>
 </head>
 
@@ -76,38 +55,22 @@
   <div class="card">
     <div class="row">
       <div>
-        <h1>Carême 2026 – Objectifs</h1>
+        <h1>Christus Junior</h1>
         <p class="sub" id="dateLabel"></p>
       </div>
       <div class="pill" id="rangeLabel"></div>
     </div>
 
-    <!-- Accueil pastoral + citation du niveau -->
+    <!-- Accueil pastoral (simple) -->
     <div class="quote" style="margin-top:10px">
-      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start; justify-content:space-between">
-        <div style="flex:1; min-width:260px">
-          <b>Accueil</b> 🙏<br/>
-          <span class="sub" style="margin:6px 0 0; display:block">
-            Bienvenue dans ce chemin de Carême. Ici, on avance avec réalisme et confiance :
-            un jour à la fois, pour grandir en prière, sobriété et charité.
-          </span>
-        </div>
-        <div style="flex:1; min-width:260px">
-          <b id="levelTitle">Niveau</b><br/>
-          <span class="sub" id="levelVerse" style="margin:6px 0 0; display:block"></span>
-        </div>
-      </div>
+      <b>Bienvenue</b> 🙏<br/>
+      <span class="sub" style="margin:6px 0 0; display:block">
+        Un petit pas chaque jour : prière, sobriété, charité. L’important, c’est de revenir au Christ.
+      </span>
     </div>
 
     <div class="row" style="margin-top:12px">
-      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
-        <span class="pill">Niveau</span>
-        <select id="levelSelect" aria-label="Niveau">
-          <option value="1">Le grain de sénevé</option>
-          <option value="2">Le cep et les sarments</option>
-          <option value="3">Feu dévorant</option>
-        </select>
-      </div>
+      <div class="pill">Objectifs du jour</div>
 
       <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end">
         <button class="btn secondary" id="prevDay">← Jour</button>
@@ -132,7 +95,7 @@
 
     <div class="grid">
       <div class="section">
-        <h2>Objectifs du jour</h2>
+        <h2>À faire aujourd’hui</h2>
         <ul id="todayTasks"></ul>
         <div class="foot" id="dayHint"></div>
         <div class="row" style="margin-top:12px; justify-content:flex-start; gap:10px">
@@ -141,13 +104,13 @@
       </div>
 
       <div class="section">
-        <h2>Objectifs de la semaine</h2>
+        <h2>À faire cette semaine</h2>
         <p class="sub" id="weekLabel" style="margin-bottom:10px"></p>
         <ul id="weekTasks"></ul>
 
         <div class="hr"></div>
 
-        <h2>Avant Pâques / sur la durée</h2>
+        <h2>Avant Pâques</h2>
         <ul id="seasonTasks"></ul>
 
         <div class="row" style="margin-top:12px; justify-content:flex-start; gap:10px">
@@ -170,7 +133,7 @@
         alt="Parcours Christus"
         style="width:100%; max-width:520px; height:auto; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.10);"
       />
-      <div class="foot">Tu peux enregistrer cette page sur l’écran d’accueil pour l’utiliser comme une appli.</div>
+      <div class="foot">Astuce : ajoute cette page à l’écran d’accueil pour l’utiliser comme une appli.</div>
     </div>
 
   </div>
@@ -178,112 +141,36 @@
 
 <script>
 (() => {
-  // --- Période Carême 2026 (verrouillée)
+  // --- Période Carême 2026
   const START = new Date("2026-02-18T00:00:00"); // Mercredi des Cendres
   const END   = new Date("2026-04-05T00:00:00"); // Dimanche de Pâques
 
-  const KEY = "careme_2026_custom_levels_v3";
+  const KEY = "christus_junior_v1";
   const $ = (id) => document.getElementById(id);
 
   // --- AELF URL (messe du jour)
   function aelfUrl(iso){ return `https://www.aelf.org/${iso}/romain/messe`; }
 
-  // --- Niveaux + versets
-  const LEVEL_META = {
-    1: {
-      name: "Le grain de sénevé",
-      verse: "« Le Royaume des cieux est comparable à un grain de sénevé qu’un homme a semé dans son champ… » (Mt 13,31-32)"
-    },
-    2: {
-      name: "Le cep et les sarments",
-      verse: "« Celui qui demeure en moi et en qui je demeure porte beaucoup de fruit… » (Jn 15,5)"
-    },
-    3: {
-      name: "Feu dévorant",
-      verse: "« Notre Dieu est un feu dévorant. » (He 12,29)"
-    }
-  };
-
-  // --- Objectifs
-  const LEVELS = {
-    1: {
-      daily: [
-        { id:"oraison", label:"Oraison : 15 minutes", cat:"Discipline spirituelle" },
-        { id:"chapelet", label:"Chapelet : au moins une dizaine", cat:"Discipline spirituelle" },
-        { id:"lecture", label:"Lecture spirituelle : Évangile ou liturgie du jour", cat:"Discipline spirituelle" },
-        { id:"sobriete", label:"Sobriété numérique : pas après 21h", cat:"Ascèse" },
-        { id:"sommeil", label:"Sommeil : viser au moins 7h", cat:"Ascèse" },
-      ],
-      weekdayOnly: [
-        { id:"jeune_vendredi", label:"Jeûne : 1 jour/semaine (vendredi)", cat:"Ascèse", days:[5] },
-        { id:"abstinence_vendredi", label:"Abstinence : le vendredi (viande)", cat:"Ascèse", days:[5] },
-      ],
-      weekly: [
-        { id:"aumone", label:"Aumône : 1 geste concret", cat:"Charité & fraternité" },
-        { id:"fraternite", label:"Fraternité : partager 1 fois dans la semaine", cat:"Charité & fraternité" },
-      ],
-      season: [
-        { id:"confession", label:"Confession : au moins 1 fois avant Pâques", cat:"Discipline spirituelle" },
-      ],
-      periodic: []
-    },
-
-    2: {
-      daily: [
-        { id:"oraison", label:"Oraison : 30 minutes", cat:"Discipline spirituelle" },
-        { id:"lecture_20", label:"Lecture/formation : 20 minutes", cat:"Discipline spirituelle" },
-        { id:"examen", label:"Examen de conscience : chaque soir", cat:"Discipline spirituelle" },
-        { id:"sobriete_strict", label:"Sobriété numérique : pas de réseaux sociaux/vidéos (sauf nécessaire)", cat:"Ascèse" },
-        { id:"douche_temperee", label:"Douches tempérées ou froides (selon possibilité)", cat:"Ascèse" },
-        { id:"sommeil", label:"Sommeil : 7h/nuit", cat:"Ascèse" },
-      ],
-      weekdayOnly: [
-        { id:"jeune_mercredi", label:"Jeûne : mercredi", cat:"Ascèse", days:[3] },
-        { id:"jeune_vendredi", label:"Jeûne : vendredi", cat:"Ascèse", days:[5] },
-        { id:"abstinence_vendredi", label:"Abstinence : tous les vendredis", cat:"Ascèse", days:[5] },
-        { id:"abstinence_autre", label:"Abstinence : un autre jour choisi", cat:"Ascèse", days:[0,1,2,3,4,6] },
-      ],
-      weekly: [
-        { id:"chapelet_complet", label:"Chapelet : 1 chapelet complet/semaine (ou quotidien si possible)", cat:"Discipline spirituelle" },
-        { id:"sport_2", label:"Exercice physique : 2 séances/semaine", cat:"Ascèse" },
-        { id:"aumone_2h", label:"Aumône : au moins 2h de service/charité", cat:"Charité & fraternité" },
-        { id:"fraternite_groupe", label:"Fraternité : réunion hebdomadaire (binôme/groupe)", cat:"Charité & fraternité" },
-      ],
-      season: [
-        { id:"confession_2", label:"Confession : 2 fois durant le Carême (≥ 1 avant la Semaine Sainte)", cat:"Discipline spirituelle" },
-      ],
-      periodic: []
-    },
-
-    3: {
-      daily: [
-        { id:"oraison_1h", label:"Oraison : 1h/jour (style heure sainte)", cat:"Discipline spirituelle" },
-        { id:"chapelet_quot", label:"Chapelet : quotidien, intégral si possible", cat:"Discipline spirituelle" },
-        { id:"lecture_30", label:"Lecture spirituelle : 30 min (Écriture + auteur)", cat:"Discipline spirituelle" },
-        { id:"examen_prof", label:"Examen approfondi : chaque soir (écrit si possible)", cat:"Discipline spirituelle" },
-        { id:"sobriete_rad", label:"Sobriété numérique radicale : téléphone pour l’essentiel", cat:"Ascèse" },
-        { id:"douche_froide", label:"Douche froide quotidienne", cat:"Ascèse" },
-        { id:"sommeil_reg", label:"Sommeil : régulier, jamais < 7h", cat:"Ascèse" },
-        { id:"aumone_1h", label:"Aumône/service : 1h/jour", cat:"Charité & fraternité" },
-        { id:"checkin_quot", label:"Fraternité : check-in quotidien avec un compagnon", cat:"Charité & fraternité" },
-      ],
-      weekdayOnly: [
-        { id:"jeune_tous", label:"Jeûne : tous les jours du Carême (sauf dimanches/solennités)", cat:"Ascèse", days:[1,2,3,4,5,6] },
-        { id:"abstinence_vendredi", label:"Abstinence stricte : viande tous les vendredis", cat:"Ascèse", days:[5] },
-      ],
-      weekly: [
-        { id:"adoration", label:"Adoration : au moins 1 fois/semaine", cat:"Discipline spirituelle" },
-        { id:"messe", label:"Messe : quotidienne si possible (au moins 1 fois/semaine en plus du dimanche)", cat:"Discipline spirituelle" },
-        { id:"sport_3", label:"Exercice physique : 3 fois/semaine", cat:"Ascèse" },
-        { id:"fraternite_groupe", label:"Fraternité : rencontre hebdomadaire de groupe", cat:"Charité & fraternité" },
-        { id:"accompagnement", label:"Accompagnement spirituel : régulier", cat:"Charité & fraternité" },
-        { id:"privation_autre", label:"Autre privation choisie (alcool/sucreries/etc.) – tenir la semaine", cat:"Ascèse" },
-      ],
-      season: [],
-      periodic: [
-        { id:"confession_15j", label:"Confession : chaque 15 jours", cat:"Discipline spirituelle", everyDays:15 }
-      ]
-    }
+  // --- Objectifs (niveau “grain de sénevé”, sans afficher le nom)
+  const TASKS = {
+    daily: [
+      { id:"oraison", label:"Oraison : 15 minutes", cat:"Discipline spirituelle" },
+      { id:"chapelet", label:"Chapelet : au moins une dizaine", cat:"Discipline spirituelle" },
+      { id:"lecture", label:"Lecture : Évangile ou liturgie du jour", cat:"Discipline spirituelle" },
+      { id:"sobriete", label:"Sobriété numérique : pas après 21h", cat:"Ascèse" },
+      { id:"sommeil", label:"Sommeil : viser au moins 8h", cat:"Ascèse" }  // ✅ 8h
+    ],
+    weekdayOnly: [
+      { id:"jeune_vendredi", label:"Jeûne : vendredi", cat:"Ascèse", days:[5] },
+      { id:"abstinence_vendredi", label:"Abstinence : vendredi (viande)", cat:"Ascèse", days:[5] },
+    ],
+    weekly: [
+      { id:"aumone", label:"Aumône : 1 geste concret", cat:"Charité & fraternité" },
+      { id:"fraternite", label:"Fraternité : partager 1 fois dans la semaine", cat:"Charité & fraternité" },
+    ],
+    season: [
+      { id:"confession", label:"Confession : au moins 1 fois avant Pâques", cat:"Discipline spirituelle" },
+    ]
   };
 
   // --- Helpers dates
@@ -322,9 +209,6 @@
     const d = new Date(iso+"T00:00:00");
     return d >= START && d <= END;
   }
-  function daysBetween(a,b){
-    return Math.round((b - a)/(1000*60*60*24));
-  }
 
   // --- Storage
   function load(){
@@ -333,48 +217,36 @@
   }
   function save(s){ localStorage.setItem(KEY, JSON.stringify(s)); }
 
+  // state:
+  // days[iso] = { daily:{}, weekdayOnly:{} }
+  // weeks[weekIsoMonday] = { weekly:{} }
+  // season = { confession: bool }
   let state = load();
-  if(!state.level) state.level = 1;
   if(!state.days) state.days = {};
   if(!state.weeks) state.weeks = {};
-  if(!state.season) state.season = {};
-  if(!state.periodic) state.periodic = {};
+  if(!state.season) state.season = { season:{} };
 
-  function lvl(){ return String(state.level); }
-
-  function ensureDay(iso, level){
-    if(!state.days[iso]) state.days[iso] = {};
-    if(!state.days[iso][level]) state.days[iso][level] = { daily:{}, weekdayOnly:{} };
-
-    LEVELS[level].daily.forEach(t => {
-      if(typeof state.days[iso][level].daily[t.id] !== "boolean") state.days[iso][level].daily[t.id] = false;
+  function ensureDay(iso){
+    if(!state.days[iso]) state.days[iso] = { daily:{}, weekdayOnly:{} };
+    TASKS.daily.forEach(t => {
+      if(typeof state.days[iso].daily[t.id] !== "boolean") state.days[iso].daily[t.id] = false;
     });
-
-    LEVELS[level].weekdayOnly.forEach(t => {
-      if(typeof state.days[iso][level].weekdayOnly[t.id] !== "boolean") state.days[iso][level].weekdayOnly[t.id] = false;
+    TASKS.weekdayOnly.forEach(t => {
+      if(typeof state.days[iso].weekdayOnly[t.id] !== "boolean") state.days[iso].weekdayOnly[t.id] = false;
     });
   }
 
-  function ensureWeek(weekIso, level){
-    if(!state.weeks[weekIso]) state.weeks[weekIso] = {};
-    if(!state.weeks[weekIso][level]) state.weeks[weekIso][level] = { weekly:{} };
-
-    LEVELS[level].weekly.forEach(t => {
-      if(typeof state.weeks[weekIso][level].weekly[t.id] !== "boolean") state.weeks[weekIso][level].weekly[t.id] = false;
+  function ensureWeek(weekIso){
+    if(!state.weeks[weekIso]) state.weeks[weekIso] = { weekly:{} };
+    TASKS.weekly.forEach(t => {
+      if(typeof state.weeks[weekIso].weekly[t.id] !== "boolean") state.weeks[weekIso].weekly[t.id] = false;
     });
   }
 
-  function ensureSeason(level){
-    if(!state.season[level]) state.season[level] = { season:{} };
-    LEVELS[level].season.forEach(t => {
-      if(typeof state.season[level].season[t.id] !== "boolean") state.season[level].season[t.id] = false;
-    });
-  }
-
-  function ensurePeriodic(level){
-    if(!state.periodic[level]) state.periodic[level] = { periodic:{} };
-    LEVELS[level].periodic.forEach(t => {
-      if(!state.periodic[level].periodic[t.id]) state.periodic[level].periodic[t.id] = {};
+  function ensureSeason(){
+    if(!state.season) state.season = { season:{} };
+    TASKS.season.forEach(t => {
+      if(typeof state.season.season[t.id] !== "boolean") state.season.season[t.id] = false;
     });
   }
 
@@ -393,48 +265,39 @@
 
     $("prevDay").setAttribute("aria-disabled", current <= START ? "true" : "false");
     $("nextDay").setAttribute("aria-disabled", current >= END ? "true" : "false");
-
-    const meta = LEVEL_META[parseInt(state.level,10)];
-    $("levelTitle").textContent = meta.name;
-    $("levelVerse").textContent = meta.verse;
   }
 
-  function tasksTodayFor(level, date){
+  function tasksTodayFor(date){
     const out = [];
-    LEVELS[level].daily.forEach(t => out.push({ ...t, scope:"daily" }));
+    TASKS.daily.forEach(t => out.push({ ...t, scope:"daily" }));
     const dow = dayOfWeek(date);
-    LEVELS[level].weekdayOnly.forEach(t => {
+    TASKS.weekdayOnly.forEach(t => {
       if(t.days && t.days.includes(dow)){
-        let extra = null;
-        if(dow === 5) extra = "Vendredi";
-        else if(dow === 3) extra = "Mercredi";
-        else extra = "Jour";
-        out.push({ ...t, scope:"weekdayOnly", extra });
+        out.push({ ...t, scope:"weekdayOnly", extra: (dow===5 ? "Vendredi" : "Jour") });
       }
     });
     return out;
   }
 
   function renderToday(){
-    const level = lvl();
     const iso = toISODate(current);
-    ensureDay(iso, level);
+    ensureDay(iso);
 
     const list = $("todayTasks");
     list.innerHTML = "";
 
-    const tasks = tasksTodayFor(level, current);
+    const tasks = tasksTodayFor(current);
     tasks.forEach(t => {
       const li = document.createElement("li");
       const cb = document.createElement("input");
       cb.type = "checkbox";
       cb.checked = (t.scope === "daily")
-        ? state.days[iso][level].daily[t.id]
-        : state.days[iso][level].weekdayOnly[t.id];
+        ? state.days[iso].daily[t.id]
+        : state.days[iso].weekdayOnly[t.id];
 
       cb.addEventListener("change", () => {
-        if(t.scope === "daily") state.days[iso][level].daily[t.id] = cb.checked;
-        else state.days[iso][level].weekdayOnly[t.id] = cb.checked;
+        if(t.scope === "daily") state.days[iso].daily[t.id] = cb.checked;
+        else state.days[iso].weekdayOnly[t.id] = cb.checked;
         save(state);
         updateProgress();
       });
@@ -446,7 +309,6 @@
       const meta = document.createElement("div");
       meta.className = "meta";
       meta.textContent = t.cat;
-
       if(t.extra){
         const span = document.createElement("span");
         span.className = "tag";
@@ -463,32 +325,29 @@
     });
 
     const dow = dayOfWeek(current);
-    let hint = "✅ Un pas à la fois. Si tu rates un jour, reprends simplement demain.";
-    if(dow === 5) hint = "✨ Aujourd’hui c’est <b>vendredi</b> : objectifs spécifiques affichés.";
-    if(dow === 3 && level === "2") hint = "✨ Aujourd’hui c’est <b>mercredi</b> : jeûne affiché (niveau “cep et sarments”).";
-    if(level === "3" && dow !== 0) hint = "🔥 Niveau “feu dévorant” : jeûne affiché tous les jours sauf dimanche.";
-    if(level === "3" && dow === 0) hint = "🌿 Dimanche : pas de jeûne — garde la joie et l’action de grâce.";
+    let hint = "✅ Un petit pas aujourd’hui. Si tu rates, tu reprends demain.";
+    if(dow === 5) hint = "✨ Aujourd’hui c’est <b>vendredi</b> : jeûne + abstinence.";
+    if(dow === 0) hint = "🌿 Dimanche : garde la joie et l’action de grâce.";
     $("dayHint").innerHTML = hint;
   }
 
   function renderWeek(){
-    const level = lvl();
     const { ws, we, key } = weekKey(current);
-    ensureWeek(key, level);
+    ensureWeek(key);
 
     $("weekLabel").textContent = `Semaine : ${formatShortFR(ws)} → ${formatShortFR(we)}`;
 
     const list = $("weekTasks");
     list.innerHTML = "";
 
-    LEVELS[level].weekly.forEach(t => {
+    TASKS.weekly.forEach(t => {
       const li = document.createElement("li");
       const cb = document.createElement("input");
       cb.type = "checkbox";
-      cb.checked = state.weeks[key][level].weekly[t.id];
+      cb.checked = state.weeks[key].weekly[t.id];
 
       cb.addEventListener("change", () => {
-        state.weeks[key][level].weekly[t.id] = cb.checked;
+        state.weeks[key].weekly[t.id] = cb.checked;
         save(state);
         updateProgress();
       });
@@ -508,33 +367,21 @@
       li.appendChild(div);
       list.appendChild(li);
     });
-  }
-
-  function periodicPeriodsForTask(task){
-    const totalDays = daysBetween(START, END) + 1;
-    return Math.ceil(totalDays / task.everyDays);
-  }
-  function periodIndexForDate(task, date){
-    const offset = daysBetween(START, date);
-    return Math.floor(offset / task.everyDays);
   }
 
   function renderSeason(){
-    const level = lvl();
-    ensureSeason(level);
-    ensurePeriodic(level);
-
+    ensureSeason();
     const list = $("seasonTasks");
     list.innerHTML = "";
 
-    LEVELS[level].season.forEach(t => {
+    TASKS.season.forEach(t => {
       const li = document.createElement("li");
       const cb = document.createElement("input");
       cb.type = "checkbox";
-      cb.checked = !!state.season[level].season[t.id];
+      cb.checked = !!state.season.season[t.id];
 
       cb.addEventListener("change", () => {
-        state.season[level].season[t.id] = cb.checked;
+        state.season.season[t.id] = cb.checked;
         save(state);
         updateProgress();
       });
@@ -546,48 +393,6 @@
       const meta = document.createElement("div");
       meta.className = "meta";
       meta.textContent = t.cat;
-
-      div.appendChild(b);
-      div.appendChild(meta);
-
-      li.appendChild(cb);
-      li.appendChild(div);
-      list.appendChild(li);
-    });
-
-    LEVELS[level].periodic.forEach(t => {
-      const li = document.createElement("li");
-      const pIdx = periodIndexForDate(t, current);
-      const key = "p" + pIdx;
-
-      if(typeof state.periodic[level].periodic[t.id][key] !== "boolean"){
-        state.periodic[level].periodic[t.id][key] = false;
-        save(state);
-      }
-
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.checked = !!state.periodic[level].periodic[t.id][key];
-
-      cb.addEventListener("change", () => {
-        state.periodic[level].periodic[t.id][key] = cb.checked;
-        save(state);
-        updateProgress();
-      });
-
-      const div = document.createElement("div");
-      div.className = "task";
-      const totalPeriods = periodicPeriodsForTask(t);
-      const b = document.createElement("b");
-      b.textContent = t.label;
-
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      meta.textContent = `${t.cat} · Période ${pIdx+1}/${totalPeriods} (tous les ${t.everyDays} jours)`;
-      const span = document.createElement("span");
-      span.className = "tag";
-      span.textContent = "Périodique";
-      meta.appendChild(span);
 
       div.appendChild(b);
       div.appendChild(meta);
@@ -599,23 +404,22 @@
   }
 
   function todayProgress(){
-    const level = lvl();
     const iso = toISODate(current);
-    ensureDay(iso, level);
+    ensureDay(iso);
 
-    const tasks = tasksTodayFor(level, current);
+    const tasks = tasksTodayFor(current);
     let done = 0;
     tasks.forEach(t => {
-      const v = (t.scope === "daily") ? state.days[iso][level].daily[t.id] : state.days[iso][level].weekdayOnly[t.id];
+      const v = (t.scope === "daily") ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id];
       if(v) done++;
     });
+
     return { done, total: tasks.length, pct: pct(done, tasks.length) };
   }
 
   function weekProgress(){
-    const level = lvl();
     const { ws, key } = weekKey(current);
-    ensureWeek(key, level);
+    ensureWeek(key);
 
     let total = 0, done = 0;
 
@@ -624,35 +428,34 @@
       const iso = toISODate(d);
       if(!inRangeISO(iso)) continue;
 
-      ensureDay(iso, level);
-      const tasks = tasksTodayFor(level, d);
+      ensureDay(iso);
+      const tasks = tasksTodayFor(d);
       total += tasks.length;
       tasks.forEach(t => {
-        const v = (t.scope === "daily") ? state.days[iso][level].daily[t.id] : state.days[iso][level].weekdayOnly[t.id];
+        const v = (t.scope === "daily") ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id];
         if(v) done++;
       });
     }
 
-    total += LEVELS[level].weekly.length;
-    LEVELS[level].weekly.forEach(t => { if(state.weeks[key][level].weekly[t.id]) done++; });
+    total += TASKS.weekly.length;
+    TASKS.weekly.forEach(t => { if(state.weeks[key].weekly[t.id]) done++; });
 
     return { done, total, pct: pct(done,total) };
   }
 
   function seasonProgress(){
-    const level = lvl();
-    ensureSeason(level);
-    ensurePeriodic(level);
+    ensureSeason();
 
     let total = 0, done = 0;
 
     for(let d=new Date(START); d<=END; d=addDays(d,1)){
       const iso = toISODate(d);
-      ensureDay(iso, level);
-      const tasks = tasksTodayFor(level, d);
+      ensureDay(iso);
+
+      const tasks = tasksTodayFor(d);
       total += tasks.length;
       tasks.forEach(t => {
-        const v = (t.scope === "daily") ? state.days[iso][level].daily[t.id] : state.days[iso][level].weekdayOnly[t.id];
+        const v = (t.scope === "daily") ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id];
         if(v) done++;
       });
     }
@@ -662,21 +465,14 @@
       const wk = weekKey(d).key;
       if(seenWeeks.has(wk)) continue;
       seenWeeks.add(wk);
-      ensureWeek(wk, level);
-      total += LEVELS[level].weekly.length;
-      LEVELS[level].weekly.forEach(t => { if(state.weeks[wk][level].weekly[t.id]) done++; });
+
+      ensureWeek(wk);
+      total += TASKS.weekly.length;
+      TASKS.weekly.forEach(t => { if(state.weeks[wk].weekly[t.id]) done++; });
     }
 
-    total += LEVELS[level].season.length;
-    LEVELS[level].season.forEach(t => { if(state.season[level].season[t.id]) done++; });
-
-    LEVELS[level].periodic.forEach(t => {
-      const n = periodicPeriodsForTask(t);
-      total += n;
-      for(let i=0;i<n;i++){
-        if(!!state.periodic[level].periodic[t.id]["p"+i]) done++;
-      }
-    });
+    total += TASKS.season.length;
+    TASKS.season.forEach(t => { if(state.season.season[t.id]) done++; });
 
     return { done, total, pct: pct(done,total) };
   }
@@ -704,13 +500,7 @@
     updateProgress();
   }
 
-  function applyLevelFromUI(){
-    const v = parseInt($("levelSelect").value,10);
-    state.level = (v===1||v===2||v===3) ? v : 1;
-    save(state);
-    renderAll();
-  }
-
+  // Navigation
   $("prevDay").addEventListener("click", () => {
     if(current <= START) return;
     current = addDays(current, -1);
@@ -726,45 +516,43 @@
     renderAll();
   });
 
+  // Reset
   $("resetDay").addEventListener("click", () => {
-    const level = lvl();
     const iso = toISODate(current);
-    ensureDay(iso, level);
-    const tasks = tasksTodayFor(level, current);
+    ensureDay(iso);
+
+    const tasks = tasksTodayFor(current);
     tasks.forEach(t => {
-      if(t.scope === "daily") state.days[iso][level].daily[t.id] = false;
-      else state.days[iso][level].weekdayOnly[t.id] = false;
+      if(t.scope === "daily") state.days[iso].daily[t.id] = false;
+      else state.days[iso].weekdayOnly[t.id] = false;
     });
+
     save(state);
     renderAll();
   });
 
   $("resetWeek").addEventListener("click", () => {
-    const level = lvl();
     const { key } = weekKey(current);
-    ensureWeek(key, level);
-    LEVELS[level].weekly.forEach(t => state.weeks[key][level].weekly[t.id] = false);
+    ensureWeek(key);
+    TASKS.weekly.forEach(t => state.weeks[key].weekly[t.id] = false);
     save(state);
     renderAll();
   });
 
-  // --- Reset total (simple et fiable)
-$("resetAll").addEventListener("click", () => {
-  const ok = confirm("Êtes-vous sûr de vouloir tout réinitialiser ?\n\nCette action effacera toutes les coches enregistrées sur cet appareil.");
-  if(!ok) return;
+  $("resetAll").addEventListener("click", () => {
+    const ok = confirm(
+      "Êtes-vous sûr de vouloir tout réinitialiser ?\n\n" +
+      "Cette action effacera toutes les coches enregistrées sur cet appareil."
+    );
+    if(!ok) return;
 
-  localStorage.removeItem(KEY);
-  state = { level: 1, days:{}, weeks:{}, season:{}, periodic:{} };
-  save(state);
+    localStorage.removeItem(KEY);
+    state = { days:{}, weeks:{}, season:{ season:{} } };
+    save(state);
+    renderAll();
+  });
 
-  $("levelSelect").value = "1";
-  renderAll();
-});
-
-  // init
-  $("levelSelect").value = String(state.level || 1);
-  $("levelSelect").addEventListener("change", applyLevelFromUI);
-
+  // Init
   save(state);
   current = clampToRange(new Date());
   renderAll();
