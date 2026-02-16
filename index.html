@@ -157,6 +157,10 @@
     }
     .toast.hidden{ display:none; }
     .toast .row{ justify-content:flex-start; }
+
+    .banner{ padding:12px; border-radius:16px; border:1px solid rgba(255,255,255,.14); background:rgba(251,113,133,.12); }
+    .banner b{ font-weight:900; }
+    .banner.hidden{ display:none; }
   </style>
 </head>
 
@@ -202,6 +206,12 @@
         <button class="btn secondary" id="howInstall">📲 Ajouter à l’écran d’accueil</button>
       </div>
     </div>
+
+    <div id="specialBanner" class="banner hidden" role="status" aria-live="polite">
+      <b id="specialBannerTitle">🔥 Jour spécial</b><br/>
+      <span class="muted" id="specialBannerText" style="display:block; margin-top:4px"></span>
+    </div>
+
 
     <div class="hr"></div>
 
@@ -380,13 +390,14 @@
   if(!state.streak) state.streak = { lastDoneIso:"", count:0 };
 
   function ensureDay(iso){
-    if(!state.days[iso]) state.days[iso] = { daily:{}, weekdayOnly:{} };
+    if(!state.days[iso]) state.days[iso] = { daily:{}, weekdayOnly:{}, special:{} };
     TASKS.daily.forEach(t => {
       if(typeof state.days[iso].daily[t.id] !== "boolean") state.days[iso].daily[t.id] = false;
     });
     TASKS.weekdayOnly.forEach(t => {
       if(typeof state.days[iso].weekdayOnly[t.id] !== "boolean") state.days[iso].weekdayOnly[t.id] = false;
     });
+    if(typeof state.days[iso].special !== "object") state.days[iso].special = {};
   }
   function ensureWeek(weekIso){
     if(!state.weeks[weekIso]) state.weeks[weekIso] = { weekly:{} };
@@ -421,22 +432,53 @@
 
   function tasksTodayFor(date){
     const out = [];
+    const iso = toISODate(date);
+
+    const ASH_WEDNESDAY = "2026-02-18";
+    const GOOD_FRIDAY   = "2026-04-03";
+
+    // tâches normales quotidiennes
     TASKS.daily.forEach(t => out.push({ ...t, scope:"daily" }));
+
     const dow = dayOfWeek(date);
+
+    // tâches conditionnelles (vendredi : abstinence)
     TASKS.weekdayOnly.forEach(t => {
       if(t.days && t.days.includes(dow)){
         out.push({ ...t, scope:"weekdayOnly", extra: (dow===5 ? "Vendredi" : "Jour") });
       }
     });
+
+    // 🔥 Mercredi des Cendres : jeûne + abstinence
+    if(iso === ASH_WEDNESDAY){
+      out.push({
+        id:"cendres_jeune_abstinence",
+        label:"Jeûne et abstinence (Mercredi des Cendres)",
+        cat:"Ascèse",
+        scope:"special"
+      });
+    }
+
+    // 🔥 Vendredi Saint : jeûne uniquement (abstinence déjà présente tous les vendredis)
+    if(iso === GOOD_FRIDAY){
+      out.push({
+        id:"vendredi_saint_jeune",
+        label:"Jeûne (Vendredi Saint)",
+        cat:"Ascèse",
+        scope:"special"
+      });
+    }
+
     return out;
   }
+
 
   function anyTaskCheckedToday(){
     const iso = toISODate(current);
     ensureDay(iso);
     // check today's visible tasks
     const tasks = tasksTodayFor(current);
-    return tasks.some(t => (t.scope==="daily" ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id]));
+    return tasks.some(t => (t.scope==="daily" ? state.days[iso].daily[t.id] : (t.scope==="weekdayOnly" ? state.days[iso].weekdayOnly[t.id] : state.days[iso].special[t.id])));
   }
 
   function updateStreak(){
@@ -480,11 +522,14 @@
       const li = document.createElement("li");
       const cb = document.createElement("input");
       cb.type = "checkbox";
-      cb.checked = (t.scope === "daily") ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id];
+      cb.checked = (t.scope === "daily") ? state.days[iso].daily[t.id]
+        : (t.scope === "weekdayOnly") ? state.days[iso].weekdayOnly[t.id]
+        : (state.days[iso].special[t.id] || false);
 
       cb.addEventListener("change", () => {
         if(t.scope === "daily") state.days[iso].daily[t.id] = cb.checked;
-        else state.days[iso].weekdayOnly[t.id] = cb.checked;
+        else if(t.scope === "weekdayOnly") state.days[iso].weekdayOnly[t.id] = cb.checked;
+        else state.days[iso].special[t.id] = cb.checked;
 
         save(state);
         // streak: update if at least one checked
@@ -606,7 +651,9 @@
     const tasks = tasksTodayFor(current);
     let done = 0;
     tasks.forEach(t => {
-      const v = (t.scope === "daily") ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id];
+      const v = (t.scope === "daily") ? state.days[iso].daily[t.id]
+        : (t.scope === "weekdayOnly") ? state.days[iso].weekdayOnly[t.id]
+        : state.days[iso].special[t.id];
       if(v) done++;
     });
 
@@ -628,7 +675,9 @@
       const tasks = tasksTodayFor(d);
       total += tasks.length;
       tasks.forEach(t => {
-        const v = (t.scope === "daily") ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id];
+        const v = (t.scope === "daily") ? state.days[iso].daily[t.id]
+        : (t.scope === "weekdayOnly") ? state.days[iso].weekdayOnly[t.id]
+        : state.days[iso].special[t.id];
         if(v) done++;
       });
     }
@@ -651,7 +700,9 @@
       const tasks = tasksTodayFor(d);
       total += tasks.length;
       tasks.forEach(t => {
-        const v = (t.scope === "daily") ? state.days[iso].daily[t.id] : state.days[iso].weekdayOnly[t.id];
+        const v = (t.scope === "daily") ? state.days[iso].daily[t.id]
+        : (t.scope === "weekdayOnly") ? state.days[iso].weekdayOnly[t.id]
+        : state.days[iso].special[t.id];
         if(v) done++;
       });
     }
