@@ -196,7 +196,7 @@
     <div class="quote">
       <b>Mission du jour</b> 🌟<br/>
       <div class="muted" style="margin-top:6px">
-        Un petit pas chaque jour : prière, sobriété, charité. L’important, c’est de revenir au Christ.
+        Un petit pas chaque jour : prière, jeûne, aumône. L’important, c’est de revenir au Christ.
       </div>
       <div class="row" style="margin-top:10px; justify-content:flex-start; gap:10px">
         <button class="btn secondary" id="howInstall">📲 Ajouter à l’écran d’accueil</button>
@@ -222,7 +222,7 @@
         <div class="progress"><div class="bar" id="seasonBar"></div></div>
       </div>
       <div class="stat">
-        <div class="k">Bonus</div>
+        <div class="k">Booster</div>
         <div class="v" id="bonusText">✅</div>
         <div class="muted" style="margin-top:2px; font-size:12px" id="bonusHint">Coche 1 truc, c’est déjà bien.</div>
       </div>
@@ -296,19 +296,19 @@
   // --- Objectifs (version junior) — sommeil 8h ✅
   const TASKS = {
     daily: [
-      { id:"oraison", label:"Oraison : 15 minutes", cat:"Discipline spirituelle" },
+      { id:"oraison", label:"Prière silencieuse : 10 minutes", cat:"Discipline spirituelle" },
       { id:"chapelet", label:"Chapelet : au moins une dizaine", cat:"Discipline spirituelle" },
       { id:"lecture", label:"Lecture : Évangile ou liturgie du jour", cat:"Discipline spirituelle" },
-      { id:"sobriete", label:"Sobriété numérique : pas après 21h", cat:"Ascèse" },
-      { id:"sommeil", label:"Sommeil : viser au moins 8h", cat:"Ascèse" }
+      { id:"sobriete", label:"Sobriété numérique : pas d'écran après 21h", cat:"Ascèse" },
+      { id:"sommeil", label:"Sommeil : au moins 8h de sommeil", cat:"Ascèse" }
     ],
     weekdayOnly: [
-      { id:"jeune_vendredi", label:"Jeûne : vendredi", cat:"Ascèse", days:[5] },
+      //--- { id:"jeune_vendredi", label:"Jeûne : vendredi", cat:"Ascèse", days:[5] },
       { id:"abstinence_vendredi", label:"Abstinence : vendredi (viande)", cat:"Ascèse", days:[5] },
     ],
     weekly: [
-      { id:"aumone", label:"Aumône : 1 geste concret", cat:"Charité & fraternité" },
-      { id:"fraternite", label:"Fraternité : partager 1 fois dans la semaine", cat:"Charité & fraternité" },
+      { id:"aumone", label:"Aumône : 1 geste concret (rendre un service, partager quelque chose, donner du temps)", cat:"Charité & fraternité" },
+      { id:"fraternite", label:"Fraternité : faire le point sur son Carême avec un ami, un animateur...", cat:"Charité & fraternité" },
     ],
     season: [
       { id:"confession", label:"Confession : au moins 1 fois avant Pâques", cat:"Discipline spirituelle" },
@@ -517,7 +517,7 @@
 
     const dow = dayOfWeek(current);
     let hint = "✅ Mini objectif : coche au moins 1 truc aujourd’hui.";
-    if(dow === 5) hint = "✨ Vendredi : jeûne + abstinence. Courage !";
+    if(dow === 5) hint = "✨ Vendredi : abstinence. Courage !";
     if(dow === 0) hint = "🌿 Dimanche : on respire, on remercie, on repart demain.";
     $("dayHint").innerHTML = hint;
 
