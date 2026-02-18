@@ -173,8 +173,19 @@
         <div style="font-size:22px">✝️</div>
         <div>
           <h1 class="title">Christus Junior</h1>
-          <div class="subtitle" id="dateLabel"></div>
+          <div class="subtitle" id="dateLabel"><br><br><br></div>
         </div>
+
+        <div id="specialBanner"
+     style="display:none;
+            margin:10px 0;
+            padding:10px 14px;
+            border-radius:12px;
+            background:rgba(255,215,0,.12);
+            border:1px solid rgba(255,215,0,.35);
+            font-weight:600;">
+</div>
+
       </div>
       <div class="row" style="justify-content:flex-end">
         <span class="badge" id="rangeLabel"></span>
@@ -296,12 +307,53 @@
   // --- Période Carême 2026
   const START = new Date("2026-02-18T00:00:00"); // Mercredi des Cendres
   const END   = new Date("2026-04-05T00:00:00"); // Dimanche de Pâques
+  // --- Jours particuliers 2026
+  const ASH_WEDNESDAY = "2026-02-18";
+  const GOOD_FRIDAY   = "2026-04-03";
+  const HOLY_THURSDAY = "2026-04-02";
+  const PALM_SUNDAY   = "2026-03-29";
+  const EASTER_SUNDAY = "2026-04-05";
+
+  const SOLEMNITIES = {
+    "2026-03-19": "Saint Joseph",
+    "2026-03-25": "Annonciation"
+};
 
   const KEY = "christus_junior_youth_v1";
   const $ = (id) => document.getElementById(id);
 
   // --- AELF URL
   function aelfUrl(iso){ return `https://www.aelf.org/${iso}/romain/messe`; }
+
+   // --- Gestion jours spéciaux
+  function specialDayInfo(date){
+  const iso = toISODate(date);
+  const dow = date.getDay();
+
+  if(iso === ASH_WEDNESDAY)
+    return { label:"Mercredi des Cendres", liftAscese:false };
+
+  if(iso === GOOD_FRIDAY)
+    return { label:"Vendredi Saint", liftAscese:false };
+
+  if(iso === HOLY_THURSDAY)
+    return { label:"Jeudi Saint", liftAscese:false };
+
+  if(iso === PALM_SUNDAY)
+    return { label:"Dimanche des Rameaux", liftAscese:true };
+
+  if(iso === EASTER_SUNDAY)
+    return { label:"Dimanche de Pâques", liftAscese:true };
+
+  if(SOLEMNITIES[iso])
+    return { label:SOLEMNITIES[iso], liftAscese:true };
+
+  if(dow === 0)
+    return { label:"Dimanche", liftAscese:true };
+
+  return null;
+}
+
 
   // --- Objectifs (version junior) — sommeil 8h ✅
   const TASKS = {
@@ -420,6 +472,17 @@
 
   function updateHeader(){
     const iso = toISODate(current);
+    const info = specialDayInfo(current);
+const banner = document.getElementById("specialBanner");
+
+if(info){
+  banner.style.display = "block";
+  banner.innerHTML = "⭐ " + info.label +
+    (info.liftAscese ? " · Ascèses levées (sauf sommeil)" : "");
+}else{
+  banner.style.display = "none";
+}
+
     $("dateLabel").textContent = formatFR(current);
     $("rangeLabel").textContent = `Carême 2026 · ${formatShortFR(START)} → ${formatShortFR(END)}`;
     $("aelfLink").href = aelfUrl(iso);
